@@ -1,0 +1,38 @@
+citHeader("To cite projection scrubbing in publications use the following references. (To cite other methods included in this package, refer to the documentation for their individual functions.)")
+
+projection_scrubbing <- c(
+	bibentry(
+		bibtype      = "Article",
+		title        = "PCA leverage: outlier detection for high-dimensional functional magnetic resonance imaging data",
+		author       = personList(
+			as.person("Amanda F Mejia"),
+			as.person("Mary Beth Nebel"),
+			as.person("Ani Eloyan"),
+			as.person("Brian Caffo"),
+			as.person("Martin A. Lindquist")
+		),
+		journal      = "Biostatistics",
+		year         = "2017",
+		volume       = "18",
+		number       = "3",
+		pages        = "521--536",
+		publisher    = "Oxford University Press",
+		doi          = "10.1093/biostatistics/kxw050",
+		key          = "mejiaPCALeverageOutlier2017a"
+	),
+
+	bibentry(
+		bibtype			 = "Article",
+		title 			 = "Projection scrubbing: a more effective, data-driven fMRI denoising method", 
+		author 			 = personList(
+			as.person("Damon D Pham"),
+			as.person("Daniel McDonald"),
+			as.person("Lei Ding"),
+			as.person("Mary Beth Nebel"),
+			as.person("Amanda Mejia")
+		),
+		journal			 = "Arxiv",
+		year 				 = "2021",
+		key					 = "phamProjectionScrubbingMore2021a"
+	)
+)
