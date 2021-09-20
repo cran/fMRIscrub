@@ -155,7 +155,7 @@ List pcatf_core(arma::mat X, arma::mat U, arma::mat V, arma::vec d,
 
       vk = X.t()*uk;
       vk = arma::normalise(vk);
-      err = arma::norm((uk-ukold)/sqrt(n));
+      err = arma::norm((uk-ukold)/sqrt((double)n));
       if(err < tol) break;
     }
 
