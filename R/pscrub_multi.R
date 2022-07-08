@@ -1,21 +1,21 @@
-#' Compare multiple leverage measures with \code{pscrub_multi}
+#' Compare projection scrubbing measures with \code{pscrub_multi}
 #' 
 #' Calculates leverage to identify outliers in high-dimensional data. 
-#'  Can compute multiple kinds of leverage at once. 
+#'  Can get results using multiple kinds of projections.
 #' 
 #' @inheritParams pscrub_Params
-#' @param projection Leverage works by projecting the data onto directions likely to 
-#'  contain outlier information. Choose at least one of the following:
+#' @param projection Projection scrubbing projects the data onto directions 
+#'  likely to contain outlier information. Choose at least one of the following:
 #' 
 #'  \describe{
 #'    \item{\code{"PCA"}}{PCA using the top \eqn{k} PCs.}
 #'    \item{\code{"PCA_kurt"}}{PCA using the high-kurtosis PCs among the top \eqn{k}.}
 #'    \item{\code{"PCA2"}}{PCA using the top \eqn{k2} PCs.}
 #'    \item{\code{"PCA2_kurt"}}{PCA using the high-kurtosis PCs among the top \eqn{k2}.}
-#'    \item{\code{"fusedPCA"}}{fusedPCA using the top \eqn{k} fused PCs.}
-#'    \item{\code{"fusedPCA_kurt"}}{fusedPCA using the high-kurtosis fused PCs among the top \eqn{k}.}
-#'    \item{\code{"fusedPCA2"}}{fusedPCA using the top \eqn{k2} fused PCs.}
-#'    \item{\code{"fusedPCA2_kurt"}}{fusedPCA using the high-kurtosis fused PCs among the top \eqn{k2}.}
+#    \item{\code{"fusedPCA"}}{fusedPCA using the top \eqn{k} fused PCs.}
+#    \item{\code{"fusedPCA_kurt"}}{fusedPCA using the high-kurtosis fused PCs among the top \eqn{k}.}
+#    \item{\code{"fusedPCA2"}}{fusedPCA using the top \eqn{k2} fused PCs.}
+#    \item{\code{"fusedPCA2_kurt"}}{fusedPCA using the high-kurtosis fused PCs among the top \eqn{k2}.}
 #'    \item{\code{"ICA"}}{ICA using the top \eqn{k} ICs.}
 #'    \item{\code{"ICA_kurt"}}{ICA using the high-kurtosis ICs among the top \eqn{k}.}
 #'    \item{\code{"ICA2"}}{ICA using the top \eqn{k2} ICs.}
@@ -56,17 +56,17 @@
 #'    If PCA was not used, all entries except \code{nPCs_PESEL} and/or \code{nPCs_avgvar} will not be included, depending on which
 #'    method(s) was used to select the number of PCs.
 #'  }
-#'  \item{fusedPCA}{
-#'    If fusedPCA was used, this will be a list with components:
-#'    \describe{
-#'      \item{U}{The \eqn{T} by \eqn{Q} PC score matrix.}
-#'      \item{D}{The standard deviation of each PC.}
-#'      \item{V}{The \eqn{P} by \eqn{Q} PC directions matrix. Included only if \code{get_dirs}}
-#'      \item{highkurt}{The length \code{Q} logical vector indicating scores of high kurtosis.}
-#'      \item{U_dt}{Detrended components of \code{U}. Included only if components were mean- or variance-detrended.}
-#'      \item{highkurt}{The length \code{Q} logical vector indicating detrended scores of high kurtosis. Included only if components were mean- or variance-detrended.}
-#'    }
-#'  }
+#  \item{fusedPCA}{
+#    If fusedPCA was used, this will be a list with components:
+#    \describe{
+#      \item{U}{The \eqn{T} by \eqn{Q} PC score matrix.}
+#      \item{D}{The standard deviation of each PC.}
+#      \item{V}{The \eqn{P} by \eqn{Q} PC directions matrix. Included only if \code{get_dirs}}
+#      \item{highkurt}{The length \code{Q} logical vector indicating scores of high kurtosis.}
+#      \item{U_dt}{Detrended components of \code{U}. Included only if components were mean- or variance-detrended.}
+#      \item{highkurt}{The length \code{Q} logical vector indicating detrended scores of high kurtosis. Included only if components were mean- or variance-detrended.}
+#    }
+#  }
 #'  \item{ICA}{
 #'    If ICA was used, this will be a list with components:
 #'    \describe{
@@ -89,7 +89,7 @@ pscrub_multi = function(
   X, projection = "ICA_kurt", 
   nuisance="DCT4",
   center=TRUE, scale=TRUE, comps_mean_dt=FALSE, comps_var_dt=FALSE,
-  kurt_quantile=.99, fusedPCA_kwargs=NULL,
+  kurt_quantile=.99, #fusedPCA_kwargs=NULL,
   get_dirs=FALSE, full_PCA=FALSE,
   get_outliers=TRUE, cutoff=4, seed=0,
   verbose=FALSE){
@@ -100,7 +100,7 @@ pscrub_multi = function(
 
   # `X` ------------------------------------------------------------------------
   if (verbose) { cat("Checking for missing, infinite, and constant data.\n") }
-  X <- as.matrix2(X); class(X) <- "numeric"
+  X <- as.matrix2(X, verbose=verbose); class(X) <- "numeric"
   V0_ <- ncol(X)
   X_NA_mask <- apply(X, 2, function(x){any(x %in% c(NA, NaN, -Inf, Inf))})
   if (any(X_NA_mask)) {
@@ -136,7 +136,7 @@ pscrub_multi = function(
     outlier_flag = list(),
     mask = rep(1, V0_),
     PCA = NULL,
-    fusedPCA = NULL,
+    #fusedPCA = NULL,
     ICA = NULL
   )
 
@@ -190,7 +190,7 @@ pscrub_multi = function(
     comps_mean_dt <- 0
   } else {
     comps_mean_dt <- as.numeric(comps_mean_dt)
-    stopifnot(comps_mean_dt >= 0)
+    stopifnot(is_integer(comps_mean_dt, nneg=TRUE))
   }
   if (isTRUE(comps_var_dt)) {
     comps_var_dt <- 4
@@ -198,23 +198,23 @@ pscrub_multi = function(
     comps_var_dt <- 0
   } else {
     comps_var_dt <- as.numeric(comps_var_dt)
-    stopifnot(comps_var_dt >= 0)
+    stopifnot(is_integer(comps_var_dt, nneg=TRUE))
   }
   comps_dt <- (comps_mean_dt > 0) || (comps_var_dt > 0)
   kurt_quantile <- as.numeric(kurt_quantile)
   stopifnot(kurt_quantile >= 0 && kurt_quantile <= 1)
-  if(!identical(fusedPCA_kwargs, NULL)){
-    names(fusedPCA_kwargs) <- match.arg(
-      names(fusedPCA_kwargs), c("lambda", "niter_max", "TOL", "verbose"),
-      several.ok=TRUE)
-    if(length(names(fusedPCA_kwargs)) != length(unique(names(fusedPCA_kwargs)))){
-      stop("Duplicate fusedPCA_kwargs were given.")
-    }
-  }
+  # if(!identical(fusedPCA_kwargs, NULL)){
+  #   names(fusedPCA_kwargs) <- match.arg(
+  #     names(fusedPCA_kwargs), c("lambda", "niter_max", "TOL", "verbose"),
+  #     several.ok=TRUE)
+  #   if(length(names(fusedPCA_kwargs)) != length(unique(names(fusedPCA_kwargs)))){
+  #     stop("Duplicate fusedPCA_kwargs were given.")
+  #   }
+  # }
   get_dirs <- as.logical(get_dirs); stopifnot(isTRUE(get_dirs) || isFALSE(get_dirs))
   full_PCA <- as.logical(full_PCA); stopifnot(isTRUE(full_PCA) || isFALSE(full_PCA))
   get_outliers <- as.logical(get_outliers); stopifnot(isTRUE(get_outliers) || isFALSE(get_outliers))
-  cutoff <- as.numeric(cutoff); stopifnot(cutoff >= 0)
+  cutoff <- as.numeric(cutoff); stopifnot(is_integer(cutoff, nneg=TRUE))
   verbose <- as.logical(verbose); stopifnot(isTRUE(verbose) || isFALSE(verbose))
 
   # ----------------------------------------------------------------------------
@@ -243,134 +243,162 @@ pscrub_multi = function(
   # Make projection. -----------------------------------------------------------
   # ----------------------------------------------------------------------------
 
-  # Compute PCA. (Even if only ICA is being used, since we need `nComps`)
-  if (verbose) {
-    cat(paste0(
-      "Computing PCA.\n"
-    ))
-  }
-  if (get_dirs || "fusedPCA" %in% base_projection) {
-    out$PCA <- tryCatch(
-      {
-        svd(X)[c("u", "d", "v")]
-      },
-      error = function(cond) {
-        message(cond)
-        cat(
-          "Trying `corpcor::fast.svd`. An error will occur if this package ",
-          "is not available, in which case the package should be installed ",
-          "and `pscrub` should be run again.\n"
-        )
-        if (!requireNamespace("corpcor", quietly = TRUE)) {
-          stop("Package \"corpcor\" needed since `svd` failed. Please install it.", call. = FALSE)
-        }
-        return(corpcor::fast.svd(X)[c("u", "d", "v")])
-      }
-    )
-    names(out$PCA) <- toupper(names(out$PCA))
-  } else {
-    # Conserve memory by using `XXt`.
-    out$PCA <- tryCatch(
-      {
-        svd(tcrossprod(X))[c("u", "d", "v")]
-      },
-      error = function(cond) {
-        message(cond)
-        cat(
-          "Trying `corpcor::fast.svd`. An error will occur if this package",
-          "is not available, in which case the package should be installed",
-          "and `pscrub` should be run again.\n"
-        )
-        if (!requireNamespace("corpcor", quietly = TRUE)) {
-          stop("Package \"corpcor\" needed since `svd` failed. Please install it.", call. = FALSE)
-        }
-        return(corpcor::fast.svd(tcrossprod(X))[c("u", "d", "v")])
-      }
-    )
-    names(out$PCA) <- toupper(names(out$PCA))
-    out$PCA$D <- sqrt(out$PCA$D)
-    out$PCA$V <- NULL
-  }
-  # Keep only the above-average variance/PESEL PCs (whichever is greater).
+  # Compute PESEL
   maxK_PCA <- 1
-  # [TO DO]: move outside if(PCA) so PCA isn't required for ICA+PESEL
   if (any(valid_projection_PESEL %in% projection)) {
+    if (verbose) { cat("Computing PESEL.\n") }
     if (!is.null(seed)) {
-      out$PCA$nPCs_PESEL <- with(set.seed(seed), pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs)
+      nPCs_PESEL <- with(set.seed(seed), pesel::pesel(
+        t(X), npc.max=ceiling(T_/2), method="homogenous"
+      )$nPCs)
     } else {
-      out$PCA$nPCs_PESEL <- pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs
+      nPCs_PESEL <- pesel::pesel(
+        t(X), npc.max=ceiling(T_/2), method="homogenous"
+      )$nPCs
     }
-    if (out$PCA$nPCs_PESEL == 1) {
+    if (nPCs_PESEL == 1) {
       warning("PESEL estimates that there is only one component. Using two.")
-      out$PCA$nPCs_PESEL <- 2
+      nPCs_PESEL <- 2
     }
-    maxK_PCA <- max(maxK_PCA, out$PCA$nPCs_PESEL)
+    maxK_PCA <- max(maxK_PCA, nPCs_PESEL)
   }
-  if (any(valid_projection_avgvar %in% projection)) {
-    out$PCA$nPCs_avgvar <- max(1, sum(out$PCA$D^2 > mean(out$PCA$D^2)))
-    maxK_PCA <- max(maxK_PCA, out$PCA$nPCs_avgvar)
+
+  # Compute PCA.
+  if ("PCA" %in% base_projection || "fusedPCA" %in% base_projection) {
+    if (verbose) { cat("Computing PCA.\n") }
+    # Compute the SVD of X or XXt.
+    if (get_dirs || "fusedPCA" %in% base_projection) {
+      out$PCA <- tryCatch(
+        { svd(X)[c("u", "d", "v")] },
+        error = function(cond) {
+          message(cond)
+          if (!requireNamespace("corpcor", quietly = TRUE)) {
+            stop(
+              "`svd` failed, and the backup routine `corpcor::fast.svd` ", 
+              "is not available since the Package \"corpcor\" is needed. ",
+              "Please install it.", call. = FALSE
+            )
+          }
+          cat("Trying `corpcor::fast.svd`.\n")
+          return(corpcor::fast.svd(X)[c("u", "d", "v")])
+        }
+      )
+      names(out$PCA) <- toupper(names(out$PCA))
+    } else {
+      # Conserve memory by using `XXt`.
+      out$PCA <- tryCatch(
+        { svd(tcrossprod(X))[c("u", "d", "v")] },
+        error = function(cond) {
+          message(cond)
+          if (!requireNamespace("corpcor", quietly = TRUE)) {
+            stop(
+              "`svd` failed, and the backup routine `corpcor::fast.svd` ", 
+              "is not available since the Package \"corpcor\" is needed. ",
+              "Please install it.", call. = FALSE
+            )
+          }
+          cat("Trying `corpcor::fast.svd`.\n")
+          return(corpcor::fast.svd(tcrossprod(X))[c("u", "d", "v")])
+        }
+      )
+      names(out$PCA) <- toupper(names(out$PCA))
+      out$PCA$D <- sqrt(out$PCA$D)
+      out$PCA$V <- NULL
+    }
+    # Keep only the above-average variance/PESEL PCs (whichever is greater).
+    if (any(valid_projection_PESEL %in% projection)) {
+      out$PCA$nPCs_PESEL <- nPCs_PESEL
+    }
+    if (any(valid_projection_avgvar %in% projection)) {
+      out$PCA$nPCs_avgvar <- max(1, sum(out$PCA$D^2 > mean(out$PCA$D^2)))
+      maxK_PCA <- max(maxK_PCA, out$PCA$nPCs_avgvar)
+    }
+    # Identify which PCs have high kurtosis.
+    if (any(c("PCA_kurt", "PCA2_kurt") %in% projection)) {
+      out$PCA$highkurt <- high_kurtosis(out$PCA$U[, seq(maxK_PCA), drop=FALSE], kurt_quantile=kurt_quantile, min_1=TRUE)
+    }
+  } else {
+    # If computing ICA but not PCA or fusedPCA, just get the nPCs.
+    if (any(valid_projection_PESEL %in% projection)) {
+      out$PCA$nPCs_PESEL <- nPCs_PESEL
+    }
+    if (any(valid_projection_avgvar %in% projection)) {
+      eig <- svd(tcrossprod(X))$d
+      out$PCA$nPCs_avgvar <- max(1, sum(eig > mean(eig)))
+    }
   }
-  # Identify which PCs have high kurtosis.
-  if (any(c("PCA_kurt", "PCA2_kurt") %in% projection)) {
-    out$PCA$highkurt <- high_kurtosis(out$PCA$U[, seq(maxK_PCA), drop=FALSE], kurt_quantile=kurt_quantile)
-  }
-  # [TO DO]: Resolve case where no PC has high kurtosis
 
   # Compute fusedPCA.
   if ("fusedPCA" %in% base_projection) {
-    maxK_fusedPCA <- max(as.numeric(list(
-      fusedPCA = out$PCA$nPCs_PESEL,
-      fusedPCA_kurt = out$PCA$nPCs_PESEL,
-      fusedPCA2 = out$PCA$nPCs_avgvar,
-      fusedPCA2_kurt = out$PCA$nPCs_avgvar
-    )[projection[grepl("fusedPCA", projection)]]))
-    if (verbose) { cat("Computing fusedPCA.\n") }
-    out$fusedPCA <- do.call(
-      fusedPCA, 
-      c(
-        list(
-          X=X, X.svd=out$PCA[c("U", "D", "V")], 
-          K=maxK_fusedPCA, solve_directions=get_dirs
-        ), 
-        fusedPCA_kwargs
-      )
-    )
-    out$fusedPCA$PC_exec_times <- NULL; out$fusedPCA$nItes <- NULL
-    # V matrix from PCA no longer needed.
-    if(!get_dirs){ out$PCA$V <- NULL }
+    stop("Removed from this version.")
+    # maxK_fusedPCA <- max(as.numeric(list(
+    #   fusedPCA = out$PCA$nPCs_PESEL,
+    #   fusedPCA_kurt = out$PCA$nPCs_PESEL,
+    #   fusedPCA2 = out$PCA$nPCs_avgvar,
+    #   fusedPCA2_kurt = out$PCA$nPCs_avgvar
+    # )[projection[grepl("fusedPCA", projection)]]))
+    # if (verbose) { cat("Computing fusedPCA.\n") }
+    # out$fusedPCA <- do.call(
+    #   fusedPCA, 
+    #   c(
+    #     list(
+    #       X=X, X.svd=out$PCA[c("U", "D", "V")], 
+    #       K=maxK_fusedPCA, solve_directions=get_dirs
+    #     ), 
+    #     fusedPCA_kwargs
+    #   )
+    # )
+    # out$fusedPCA$PC_exec_times <- NULL; out$fusedPCA$nItes <- NULL
+    # # V matrix from PCA no longer needed.
+    # if(!get_dirs){ out$PCA$V <- NULL }
 
-    tf_const_mask <- apply(out$fusedPCA$u, 2, is_constant)
-    if(any(tf_const_mask)){
-      warning(
-        "Warning: ", sum(tf_const_mask), " out of ", length(tf_const_mask),
-        " fused PC scores are zero-variance.\n"
-      )
-    }
-    names(out$fusedPCA)[names(out$fusedPCA) %in% c("u", "d", "v")] <- toupper(names(out$fusedPCA)[names(out$fusedPCA) %in% c("u", "d", "v")])
+    # tf_const_mask <- apply(out$fusedPCA$u, 2, is_constant)
+    # if(any(tf_const_mask)){
+    #   warning(
+    #     "Warning: ", sum(tf_const_mask), " out of ", length(tf_const_mask),
+    #     " fused PC scores are zero-variance.\n"
+    #   )
+    # }
+    # names(out$fusedPCA)[names(out$fusedPCA) %in% c("u", "d", "v")] <- toupper(
+    #   names(out$fusedPCA)[names(out$fusedPCA) %in% c("u", "d", "v")]
+    # )
   }
-  # Identify which fused PCs have high kurtosis.
-  if (any(c("fusedPCA_kurt", "fusedPCA2_kurt") %in% projection)) {
-    out$fusedPCA$highkurt <- high_kurtosis(out$fusedPCA$U, kurt_quantile=kurt_quantile)
+  # # Identify which fused PCs have high kurtosis.
+  # if (any(c("fusedPCA_kurt", "fusedPCA2_kurt") %in% projection)) {
+  #   out$fusedPCA$highkurt <- high_kurtosis(out$fusedPCA$U, kurt_quantile=kurt_quantile)
+  # }
+
+  # Remove extra PCA information.
+  if (!is.null(out$PCA$U) && !full_PCA) {
+    out$PCA$U <- out$PCA$U[, seq(maxK_PCA), drop=FALSE]
+    out$PCA$D <- out$PCA$D[seq(maxK_PCA), drop=FALSE]
+    if (!is.null(out$PCA$V)) { 
+      out$PCA$V <- out$PCA$V[, seq(maxK_PCA), drop=FALSE]
+    }
   }
 
   # Compute ICA
-  if (any(c("ICA", "ICA2") %in% base_projection)) {
+  if ("ICA" %in% base_projection) {
     maxK_ICA <- max(as.numeric(list(
       ICA = out$PCA$nPCs_PESEL,
       ICA_kurt = out$PCA$nPCs_PESEL,
       ICA2 = out$PCA$nPCs_avgvar,
       ICA2_kurt = out$PCA$nPCs_avgvar
     )[projection[grepl("ICA", projection)]]))
+
     if (verbose) { cat("Computing ICA.\n" ) }
-    if (!requireNamespace("ica", quietly = TRUE)) {
-      stop("Package \"ica\" needed to compute the ICA. Please install it.", call. = FALSE)
+    if (!requireNamespace("fastICA", quietly = TRUE)) {
+      stop("Package \"fastICA\" needed to compute the ICA. Please install it.", call. = FALSE)
     }
     if (!is.null(seed)) {
-      out$ICA <- with(set.seed(seed), ica::icaimax(t(X), maxK_ICA, center=FALSE))[c("S", "M")]
+      out$ICA <- with(set.seed(seed), fastICA::fastICA(t(X), maxK_ICA, method="C"))[c("S", "A")]
     } else {
-      out$ICA <- ica::icaimax(t(X), maxK_ICA, center=FALSE)[c("S", "M")]
+      out$ICA <- fastICA::fastICA(t(X), maxK_ICA, method="C")[c("S", "A")]
     }
-    # Issue due to rank.
+    names(out$ICA)[names(out$ICA)=="A"] <- "M"
+    out$ICA$M <- t(out$ICA$M)
+
+    # Issue due to rank. Does this still happen w/ fastICA?
     if (ncol(out$ICA$M) < maxK_ICA) {
       cat("Rank issue with ICA: adding constant zero columns.\n")
       K_missing <- maxK_ICA - ncol(out$ICA$M)
@@ -385,32 +413,23 @@ pscrub_multi = function(
     if(!get_dirs){ out$ICA$S <- NULL }
   }
 
-  # Remove PCA information if only ICA is being used.
-  # Do this after PCA info was given to fusedPCA
-  if (!("PCA" %in% base_projection)) {
-    out$PCA$U <- out$PCA$D <- out$PCA$V <- NULL
-  } else {
-    # Remove smaller PCs.
-    if (!full_PCA) {
-      out$PCA$U <- out$PCA$U[, seq(maxK_PCA), drop=FALSE]
-      out$PCA$D <- out$PCA$D[seq(maxK_PCA), drop=FALSE]
-      if (!is.null(out$PCA$V)) { 
-        out$PCA$V <- out$PCA$V[, seq(maxK_PCA), drop=FALSE]
-      }
-    }
-  }
-
   if (comps_dt) {
     if (!is.null(out$PCA$U)) { 
-      out$PCA$U_dt <- apply(out$PCA$U, 2, rob_scale, center=comps_mean_dt, scale=comps_var_dt)
+      out$PCA$U_dt <- apply(
+        out$PCA$U, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
+      )
       out$PCA$highkurt_dt <- high_kurtosis(out$PCA$U_dt, kurt_quantile=kurt_quantile)
     }
-    if (!is.null(out$fusedPCA$U)) { 
-      out$fusedPCA$U_dt <- apply(out$fusedPCA$U, 2, rob_scale, center=comps_mean_dt, scale=comps_var_dt)
-      out$fusedPCA$highkurt_dt <- high_kurtosis(out$fusedPCA$U_dt, kurt_quantile=kurt_quantile)
-    }
+    # if (!is.null(out$fusedPCA$U)) { 
+    #   out$fusedPCA$U_dt <- apply(
+    #     out$fusedPCA$U, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
+    #   )
+    #   out$fusedPCA$highkurt_dt <- high_kurtosis(out$fusedPCA$U_dt, kurt_quantile=kurt_quantile)
+    # }
     if (!is.null(out$ICA$M)) { 
-      out$ICA$M_dt <- apply(out$ICA$M, 2, rob_scale, center=comps_mean_dt, scale=comps_var_dt)
+      out$ICA$M_dt <- apply(
+        out$ICA$M, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
+      )
       out$ICA$highkurt_dt <- high_kurtosis(out$ICA$M_dt, kurt_quantile=kurt_quantile)
     }
   }
@@ -438,10 +457,10 @@ pscrub_multi = function(
       PCA_kurt = which(out$PCA[[highkurt_ii]][seq(out$PCA$nPCs_PESEL)]),
       PCA2 = seq(out$PCA$nPCs_avgvar),
       PCA2_kurt = which(out$PCA[[highkurt_ii]][seq(out$PCA$nPCs_avgvar)]),
-      fusedPCA = seq(out$PCA$nPCs_PESEL),
-      fusedPCA_kurt = which(out$fusedPCA[[highkurt_ii]][seq(out$PCA$nPCs_PESEL)]),
-      fusedPCA2 = seq(out$PCA$nPCs_avgvar),
-      fusedPCA2_kurt = which(out$fusedPCA[[highkurt_ii]][seq(out$PCA$nPCs_avgvar)]),
+      # fusedPCA = seq(out$PCA$nPCs_PESEL),
+      # fusedPCA_kurt = which(out$fusedPCA[[highkurt_ii]][seq(out$PCA$nPCs_PESEL)]),
+      # fusedPCA2 = seq(out$PCA$nPCs_avgvar),
+      # fusedPCA2_kurt = which(out$fusedPCA[[highkurt_ii]][seq(out$PCA$nPCs_avgvar)]),
       ICA = seq(out$PCA$nPCs_PESEL),
       ICA_kurt = which(out$ICA[[highkurt_ii]][seq(out$PCA$nPCs_PESEL)]),
       ICA2 = seq(out$PCA$nPCs_avgvar),
@@ -449,6 +468,7 @@ pscrub_multi = function(
     )
 
     if (grepl("kurt", proj_ii) && length(Comps_ii) < 1) {
+      # No high-kurtosis components: no outliers!
       result_ii <- list(
         meas = rep(0, T_), 
         cut = NA, 

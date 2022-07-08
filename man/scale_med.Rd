@@ -2,22 +2,27 @@
 % Please edit documentation in R/utils.R
 \name{scale_med}
 \alias{scale_med}
-\title{Scale data columns robustly}
+\title{Robust scaling}
 \usage{
-scale_med(mat)
+scale_med(mat, TOL = 1e-08, drop_const = TRUE)
 }
 \arguments{
 \item{mat}{A numerical matrix.}
+
+\item{TOL}{minimum MAD to consider a column non-constant.
+Default: \code{1e-8}}
+
+\item{drop_const}{Drop}
 }
 \value{
 The input matrix with its columns centered and scaled.
 }
 \description{
-Centers and scales the columns of a matrix robustly for the purpose of
-covariance estimation.
+Centers and scales the columns of a matrix robustly
 }
 \details{
 Centers each column on its median, and scales each column by its median
-absolute deviation (MAD). If any column MAD is zero, its values become zero
-and a warning is raised. If all MADs are zero, an error is raised.
+absolute deviation (MAD). Constant-valued columns are set to \code{NA}
+(or removed if \code{drop_const}) and a warning is raised. If all
+MADs are zero, an error is raised.
 }

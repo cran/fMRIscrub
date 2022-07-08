@@ -28,11 +28,15 @@
 #'  are transformed to a spatial measurement representing the displacement on a 
 #'  sphere of radius \code{brain_radius} \code{trans_units}.
 #' 
-#'  If \code{brain_radius} is \code{NULL} (default), its value will be set to 
-#'  (the equivalent of) 50 mm.
+#'  If \code{brain_radius} is \code{NULL} (default), it will be set to 
+#'  50 mm.
 #' @param detrend Detrend each RP with the DCT before computing FD?
 #'  Default: \code{FALSE}. Can be a number of DCT bases to use, or \code{TRUE}
 #'  to use 4.
+#' @param lag The difference of indices between which to calculate change in
+#'  position. Default: \code{1} (the previous timepoint). Changing this
+#'  argument sets \eqn{\Delta x_i = x_{i-lag} - x_i} (and similarly for the 
+#'  other RPs).
 #' @param cutoff FD values higher than this will be flagged. Default: \code{.3}.
 #' @return A list with components
 #' \describe{
@@ -52,7 +56,7 @@
 #' 
 FD <- function(
   X, trans_units = c("mm", "cm", "in"), rot_units = c("deg", "rad", "mm", "cm", "in"), 
-  brain_radius=NULL, detrend=FALSE, cutoff=.3) {
+  brain_radius=NULL, detrend=FALSE, lag=1, cutoff=.3) {
 
   if (is.character(X)) { X <- read.table(X) }
   X <- as.matrix(X); stopifnot(is.matrix(X))
@@ -71,14 +75,13 @@ FD <- function(
   X[,1:3] <- X[,1:3] * switch(trans_units, mm=1, cm=10, `in`=25.4)
 
   if (!is.null(brain_radius)) {
-    brain_radius <- brain_radius * switch(trans_units, mm=1, cm=10, `in`=25.4)
+    brain_radius <- brain_radius * switch(rot_units, mm=1, cm=10, `in`=25.4)
   } else {
-    brain_radius <- 50 # mm
+    brain_radius <- 50
   }
 
   rot_units <- match.arg(rot_units, rot_units)
-  X[,4:6] <- X[,4:6] * switch(
-    rot_units, 
+  X[,4:6] <- X[,4:6] * switch(rot_units, 
     rad=brain_radius, deg=brain_radius*2*pi/360, 
     mm=1, cm=10, `in`=25.4
   )
@@ -90,12 +93,11 @@ FD <- function(
   }
 
   # Compute FD.
-  Xdiff <- apply(X, 2, diff)
-  FD <- c(0, apply(abs(Xdiff), 1, sum))
+  Xdiff <- apply(X, 2, diff, lag=lag)
+  FD <- c(rep(0, lag), rowSums(abs(Xdiff)))
 
   # Revert units to `trans_units`.
   attr(FD, "units") <- trans_units
-
   FD <- switch(trans_units, mm=FD, cm=FD/10, `in`=FD/25.4)
 
   out <- list(

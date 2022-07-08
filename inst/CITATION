@@ -23,7 +23,7 @@ projection_scrubbing <- c(
 
 	bibentry(
 		bibtype			 = "Article",
-		title 			 = "Projection scrubbing: a more effective, data-driven fMRI denoising method", 
+		title 			 = "Less is more: balancing noise reduction and data retention in fMRI with projection scrubbing", 
 		author 			 = personList(
 			as.person("Damon D Pham"),
 			as.person("Daniel McDonald"),
@@ -32,7 +32,7 @@ projection_scrubbing <- c(
 			as.person("Amanda Mejia")
 		),
 		journal			 = "Arxiv",
-		year 				 = "2021",
-		key					 = "phamProjectionScrubbingMore2021a"
+		year 				 = "2022",
+		key					 = "phamProjectionScrubbingMore2022a"
 	)
 )

@@ -26,7 +26,7 @@ each timepoint.
 }
 \description{
 Visualize artifact patterns from the results of \code{\link{pscrub}}.
-Requires \code{pscrub(..., get_dirs==TRUE)}.
+Requires \code{pscrub(..., get_dirs=TRUE)}.
 }
 \details{
 Computes two types: "mean" artifact images based on a weighted sum of the

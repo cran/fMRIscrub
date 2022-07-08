@@ -6,9 +6,8 @@
 \arguments{
 \item{X}{Wide numeric data matrix (\eqn{T} observations by \eqn{V} variables,
 \eqn{T << V}). If \code{X} represents an fMRI run, \eqn{T} should be the
-number of timepoints and \eqn{V} should be the number of brainordinate
-vertices/voxels. Projection scrubbing will measure the outlyingness of each
-row in \code{X}.}
+number of timepoints and \eqn{V} should be the number of vertices/voxels.
+Projection scrubbing will measure the outlyingness of each row in \code{X}.}
 
 \item{nuisance}{Nuisance signals to regress from each column of \code{X}.
 Should be specified as a design matrix: a \eqn{T} by \eqn{N} numeric matrix
@@ -59,31 +58,21 @@ helpful to detrend the components with \code{comps_mean_dt}; furthermore,
 the data nuisance regression does not address the potential existence of variance
 patterns in the components.
 
-Overall, we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
+Overall, for fMRI we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
 unless the data has been cleaned not only with a low-pass filter like
 DCT nuisance regression, but also with anatomical CompCor, ICA-FIX, or
 a similar data-driven strategy that takes into account common sources of
-artifactual trends such as respiration and heartbeat.}
+artifactual mean and variance trends such as motion and physiological cycles.}
 
 \item{kurt_quantile}{What quantile cutoff should be used to select the
 components? Default: \code{0.99}. Use \code{0} to select all high-variance
 components regardless of kurtosis value.
 
-We model each component as a length $T$ vector of Normal iid random variables,
+We model each component as a length \eqn{T} vector of Normal iid random variables,
 for which the distribution of kurtosis values can be approximated. The
 quantile is estimated based on this distribution.}
 
-\item{fusedPCA_kwargs}{Arguments to \code{\link{fusedPCA}} in list form. Valid
-entries are:
-
-\describe{
-\item{lambda}{Trend-filtering parameter. Default: \code{5}.}
-\item{niter_max}{Maximum number of iterations. Default: \code{1000}.}
-\item{TOL}{Convergence tolerance parameter. Default: \code{1e-8}.}
-\item{verbose}{Print updates? Default: \code{FALSE}.}
-}}
-
-\item{get_dirs}{Do the projection directions need to be returned? This is the
+\item{get_dirs}{Should the projection directions be returned? This is the
 \eqn{V} matrix in PCA and \eqn{S} matrix in ICA. The default is \code{FALSE}
 to save memory. However, \code{get_dirs==TRUE} is required for \code{\link{artifact_images}}.}
 

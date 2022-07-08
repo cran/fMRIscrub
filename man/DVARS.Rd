@@ -16,9 +16,9 @@ DVARS(
 \item{X}{a \eqn{T} by \eqn{N} numeric matrix representing an fMRI run. There should
 not be any missing data (\code{NA} or \code{NaN}).}
 
-\item{normalize}{Normalize the data as proposed in the paper? Default:
-\code{TRUE}. Normalization removes constant-zero voxels, scales by 100 / the
-median of the mean image, and then centers each voxel on its mean.
+\item{normalize}{Normalize the data? Default: \code{TRUE}. Normalization removes
+constant-zero voxels, scales by 100 / the median of the mean image, and
+then centers each voxel on its mean.
 
 To replicate Afyouni and Nichols' procedure for the HCP MPP data, since the
 HCP scans are already normalized to 10,000, just divide the data by 100 and

@@ -81,9 +81,9 @@ pct_sig <- function(X, center=median, by=c("column", "all")){
 #'
 #' @param X a \eqn{T} by \eqn{N} numeric matrix representing an fMRI run. There should
 #'  not be any missing data (\code{NA} or \code{NaN}).
-#' @param normalize Normalize the data as proposed in the paper? Default:
-#'  \code{TRUE}. Normalization removes constant-zero voxels, scales by 100 / the
-#'  median of the mean image, and then centers each voxel on its mean.
+#' @param normalize Normalize the data? Default: \code{TRUE}. Normalization removes 
+#'  constant-zero voxels, scales by 100 / the median of the mean image, and 
+#'  then centers each voxel on its mean.
 #'
 #'  To replicate Afyouni and Nichols' procedure for the HCP MPP data, since the
 #'  HCP scans are already normalized to 10,000, just divide the data by 100 and
@@ -122,7 +122,7 @@ DVARS <- function(
 
   cutoff_DVARS <- NULL
 
-  X <- as.matrix2(X)
+  X <- as.matrix2(X, verbose=verbose)
   T_ <- nrow(X); N_ <- ncol(X)
 
   cutoff <- list(DVARS=cutoff_DVARS, DPD=cutoff_DPD, ZD=cutoff_ZD)

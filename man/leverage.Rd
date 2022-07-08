@@ -4,13 +4,13 @@
 \alias{leverage}
 \title{Leverage}
 \usage{
-leverage(Comps, are_orthogonal = FALSE, median_cutoff = NULL)
+leverage(Comps, are_norm = FALSE, median_cutoff = NULL)
 }
 \arguments{
 \item{Comps}{The \eqn{n} by \eqn{Q} PC score matrix/IC mixing matrix.}
 
-\item{are_orthogonal}{Can the columns of \code{Comps} be assumed to be orthogonal
-and have a 2-norm of 1? Speeds up the computation.}
+\item{are_norm}{Assume the columns of \code{Comps} are orthogonal
+and have 2-norms equal to 1? Speeds up the computation.}
 
 \item{median_cutoff}{The outlier cutoff, in multiples of the median leverage.
 Default: \code{NULL} (do not compute outliers).}
@@ -22,7 +22,7 @@ A list with entries \code{"meas"} (the leverage values),
 \code{!is.null(median_cutoff)}, \code{"cut"} and \code{"flag"} are omitted.
 }
 \description{
-Computes the leverage of each observation in the PC score / IC mixing matrix (U/M)
-for projection scrubbing. Optionally can threshold the leverage values to
+Computes the leverage of each observation in the PC score (U) or
+IC mixing (M) matrix for projection scrubbing. Can threshold to
 flag potential outliers.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pscrub_multi.R
 \name{pscrub_multi}
 \alias{pscrub_multi}
-\title{Compare multiple leverage measures with \code{pscrub_multi}}
+\title{Compare projection scrubbing measures with \code{pscrub_multi}}
 \usage{
 pscrub_multi(
   X,
@@ -13,7 +13,6 @@ pscrub_multi(
   comps_mean_dt = FALSE,
   comps_var_dt = FALSE,
   kurt_quantile = 0.99,
-  fusedPCA_kwargs = NULL,
   get_dirs = FALSE,
   full_PCA = FALSE,
   get_outliers = TRUE,
@@ -25,22 +24,17 @@ pscrub_multi(
 \arguments{
 \item{X}{Wide numeric data matrix (\eqn{T} observations by \eqn{V} variables,
 \eqn{T << V}). If \code{X} represents an fMRI run, \eqn{T} should be the
-number of timepoints and \eqn{V} should be the number of brainordinate
-vertices/voxels. Projection scrubbing will measure the outlyingness of each
-row in \code{X}.}
+number of timepoints and \eqn{V} should be the number of vertices/voxels.
+Projection scrubbing will measure the outlyingness of each row in \code{X}.}
 
-\item{projection}{Leverage works by projecting the data onto directions likely to
-contain outlier information. Choose at least one of the following:
+\item{projection}{Projection scrubbing projects the data onto directions
+likely to contain outlier information. Choose at least one of the following:
 
 \describe{
 \item{\code{"PCA"}}{PCA using the top \eqn{k} PCs.}
 \item{\code{"PCA_kurt"}}{PCA using the high-kurtosis PCs among the top \eqn{k}.}
 \item{\code{"PCA2"}}{PCA using the top \eqn{k2} PCs.}
 \item{\code{"PCA2_kurt"}}{PCA using the high-kurtosis PCs among the top \eqn{k2}.}
-\item{\code{"fusedPCA"}}{fusedPCA using the top \eqn{k} fused PCs.}
-\item{\code{"fusedPCA_kurt"}}{fusedPCA using the high-kurtosis fused PCs among the top \eqn{k}.}
-\item{\code{"fusedPCA2"}}{fusedPCA using the top \eqn{k2} fused PCs.}
-\item{\code{"fusedPCA2_kurt"}}{fusedPCA using the high-kurtosis fused PCs among the top \eqn{k2}.}
 \item{\code{"ICA"}}{ICA using the top \eqn{k} ICs.}
 \item{\code{"ICA_kurt"}}{ICA using the high-kurtosis ICs among the top \eqn{k}.}
 \item{\code{"ICA2"}}{ICA using the top \eqn{k2} ICs.}
@@ -71,7 +65,7 @@ non-time-series data because the observations are not temporally related.
 Additional nuisance regressors can be specified like so:
 \code{cbind(1, dct_bases(nrow(x), 4), more_nuisance)}.}
 
-\item{center}{Center the columns of the data by their medians, and scale the
+\item{center, scale}{Center the columns of the data by their medians, and scale the
 columns of the data by their median absolute deviations (MADs)? Default: \code{TRUE}.
 Centering is necessary for computing the projections, so if \code{center} is
 \code{FALSE}, the data must already be centered.
@@ -80,16 +74,7 @@ Note that centering and scaling occur after nuisance regression, so even if
 \code{center} is \code{FALSE}, the data will be centered on the means if
 the nuisance regression included an intercept term, as it does by default.}
 
-\item{scale}{Center the columns of the data by their medians, and scale the
-columns of the data by their median absolute deviations (MADs)? Default: \code{TRUE}.
-Centering is necessary for computing the projections, so if \code{center} is
-\code{FALSE}, the data must already be centered.
-
-Note that centering and scaling occur after nuisance regression, so even if
-\code{center} is \code{FALSE}, the data will be centered on the means if
-the nuisance regression included an intercept term, as it does by default.}
-
-\item{comps_mean_dt}{Stabilize the mean and variance of each
+\item{comps_mean_dt, comps_var_dt}{Stabilize the mean and variance of each
 projection component's timecourse prior to computing kurtosis and leverage?
 These arguments should be \code{TRUE}, \code{FALSE} (default), or the number
 of DCT bases to use for detrending (\code{TRUE} will use 4).
@@ -110,58 +95,21 @@ helpful to detrend the components with \code{comps_mean_dt}; furthermore,
 the data nuisance regression does not address the potential existence of variance
 patterns in the components.
 
-Overall, we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
+Overall, for fMRI we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
 unless the data has been cleaned not only with a low-pass filter like
 DCT nuisance regression, but also with anatomical CompCor, ICA-FIX, or
 a similar data-driven strategy that takes into account common sources of
-artifactual trends such as respiration and heartbeat.}
-
-\item{comps_var_dt}{Stabilize the mean and variance of each
-projection component's timecourse prior to computing kurtosis and leverage?
-These arguments should be \code{TRUE}, \code{FALSE} (default), or the number
-of DCT bases to use for detrending (\code{TRUE} will use 4).
-Note that these arguments affect the projection components and not the data
-itself. Also, if variance-stabilizing but not mean-stabilizing,
-the components must already be expected to be mean-stabilized, for example
-if the data was rigorously detrended; otherwise, the results will be invalid.
-
-Slow-moving mean and variance patterns in the components will interfere with
-the roles of kurtosis and leverage in identifying outliers. While
-\code{nuisance} can be used to detrend the data, this nuisance regression is
-estimated \emph{non-robustly}, since a robust model takes too long to estimate
-at each data location. On the other hand, \code{comps_mean_dt} and
-\code{comps_var_dt} can be used to apply a \emph{robust} nuisance regression at each
-component, since there are much fewer components than original data locations.
-Thus, even if the data has been detrended with \code{nuisance} it may be
-helpful to detrend the components with \code{comps_mean_dt}; furthermore,
-the data nuisance regression does not address the potential existence of variance
-patterns in the components.
-
-Overall, we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
-unless the data has been cleaned not only with a low-pass filter like
-DCT nuisance regression, but also with anatomical CompCor, ICA-FIX, or
-a similar data-driven strategy that takes into account common sources of
-artifactual trends such as respiration and heartbeat.}
+artifactual mean and variance trends such as motion and physiological cycles.}
 
 \item{kurt_quantile}{What quantile cutoff should be used to select the
 components? Default: \code{0.99}. Use \code{0} to select all high-variance
 components regardless of kurtosis value.
 
-We model each component as a length $T$ vector of Normal iid random variables,
+We model each component as a length \eqn{T} vector of Normal iid random variables,
 for which the distribution of kurtosis values can be approximated. The
 quantile is estimated based on this distribution.}
 
-\item{fusedPCA_kwargs}{Arguments to \code{\link{fusedPCA}} in list form. Valid
-entries are:
-
-\describe{
-\item{lambda}{Trend-filtering parameter. Default: \code{5}.}
-\item{niter_max}{Maximum number of iterations. Default: \code{1000}.}
-\item{TOL}{Convergence tolerance parameter. Default: \code{1e-8}.}
-\item{verbose}{Print updates? Default: \code{FALSE}.}
-}}
-
-\item{get_dirs}{Do the projection directions need to be returned? This is the
+\item{get_dirs}{Should the projection directions be returned? This is the
 \eqn{V} matrix in PCA and \eqn{S} matrix in ICA. The default is \code{FALSE}
 to save memory. However, \code{get_dirs==TRUE} is required for \code{\link{artifact_images}}.}
 
@@ -209,17 +157,6 @@ where \code{Q} is the number of PCs selected by PESEL or of above-average varian
 If PCA was not used, all entries except \code{nPCs_PESEL} and/or \code{nPCs_avgvar} will not be included, depending on which
 method(s) was used to select the number of PCs.
 }
-\item{fusedPCA}{
-If fusedPCA was used, this will be a list with components:
-\describe{
-\item{U}{The \eqn{T} by \eqn{Q} PC score matrix.}
-\item{D}{The standard deviation of each PC.}
-\item{V}{The \eqn{P} by \eqn{Q} PC directions matrix. Included only if \code{get_dirs}}
-\item{highkurt}{The length \code{Q} logical vector indicating scores of high kurtosis.}
-\item{U_dt}{Detrended components of \code{U}. Included only if components were mean- or variance-detrended.}
-\item{highkurt}{The length \code{Q} logical vector indicating detrended scores of high kurtosis. Included only if components were mean- or variance-detrended.}
-}
-}
 \item{ICA}{
 If ICA was used, this will be a list with components:
 \describe{
@@ -234,6 +171,6 @@ If ICA was used, this will be a list with components:
 }
 \description{
 Calculates leverage to identify outliers in high-dimensional data.
-Can compute multiple kinds of leverage at once.
+Can get results using multiple kinds of projections.
 }
 \keyword{internal}

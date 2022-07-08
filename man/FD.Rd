@@ -10,6 +10,7 @@ FD(
   rot_units = c("deg", "rad", "mm", "cm", "in"),
   brain_radius = NULL,
   detrend = FALSE,
+  lag = 1,
   cutoff = 0.3
 )
 }
@@ -34,12 +35,17 @@ or one of the \code{trans_units} options.}
 are transformed to a spatial measurement representing the displacement on a
 sphere of radius \code{brain_radius} \code{trans_units}.
 
-If \code{brain_radius} is \code{NULL} (default), its value will be set to
-(the equivalent of) 50 mm.}
+If \code{brain_radius} is \code{NULL} (default), it will be set to
+50 mm.}
 
 \item{detrend}{Detrend each RP with the DCT before computing FD?
 Default: \code{FALSE}. Can be a number of DCT bases to use, or \code{TRUE}
 to use 4.}
+
+\item{lag}{The difference of indices between which to calculate change in
+position. Default: \code{1} (the previous timepoint). Changing this
+argument sets \eqn{\Delta x_i = x_{i-lag} - x_i} (and similarly for the
+other RPs).}
 
 \item{cutoff}{FD values higher than this will be flagged. Default: \code{.3}.}
 }

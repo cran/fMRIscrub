@@ -46,10 +46,11 @@ neighbor_counts <- function(arr, pad=FALSE){
 #'
 #' @export
 erode_vol <- function(vol, n_erosion=1, out_of_mask_val=NA){
-  stopifnot(is.numeric(n_erosion))
-  if (n_erosion==0) {return(vol)}
+  stopifnot(is_integer(n_erosion, nneg=TRUE))
+  stopifnot(length(dim(vol)) == 3)
+  if (n_erosion==0) { return(vol) }
   mask <- !array(vol %in% out_of_mask_val, dim=dim(vol))
-  for(ii in 1:n_erosion){
+  for (ii in seq(n_erosion)) {
     to_erode <- mask & neighbor_counts(mask, pad=TRUE) < 6
     mask[to_erode] <- FALSE
     vol[to_erode] <- out_of_mask_val[1]

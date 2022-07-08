@@ -1,7 +1,7 @@
 #' Artifact images
 #' 
 #' Visualize artifact patterns from the results of \code{\link{pscrub}}.
-#'  Requires \code{pscrub(..., get_dirs==TRUE)}. 
+#'  Requires \code{pscrub(..., get_dirs=TRUE)}. 
 #' 
 #' Computes two types: "mean" artifact images based on a weighted sum of the 
 #'  projection directions, with weights determined by the scores for each 
@@ -24,6 +24,8 @@
 #'
 #' @export
 artifact_images <- function(psx, idx=NULL, use_dt=TRUE){
+
+  # TO DO: only high-kurtosis components?
 
   # Check idx.
   if (is.null(idx)) {
@@ -53,7 +55,7 @@ artifact_images <- function(psx, idx=NULL, use_dt=TRUE){
     }
     V <- psx$fusedPCA$V
   } else if ("ICA" %in% names(psx)) {
-    U <- scale_med(psx$ICA$M)$mat
+    U <- scale_med(psx$ICA$M)
     if (!("S" %in% names (psx$ICA))) {
       stop("No directions. Run `pscrub` again with `get_dirs=TRUE`.")
     }

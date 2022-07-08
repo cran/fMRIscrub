@@ -2,19 +2,23 @@
 % Please edit documentation in R/utils.R
 \name{as.matrix2}
 \alias{as.matrix2}
-\title{Convert to \eqn{T} by \eqn{V} matrix}
+\title{Convert CIFTI, NIFTI, or GIFTI file input to \eqn{T} by \eqn{V} matrix}
 \usage{
-as.matrix2(x)
+as.matrix2(x, sortSub = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{x}{The object to coerce to a matrix}
+
+\item{sortSub}{Sort subcortex by labels? Default: \code{FALSE}}
+
+\item{verbose}{Print updates? Default: \code{FALSE}}
 }
 \value{
 x as a matrix.
 }
 \description{
-A \code{"xifti"} is VxT, whereas \code{scrub} accepts a
-TxV matrix. This function calls \code{as.matrix} and transposes the data
-if it is a \code{"xifti"}.
+Convert input data to \eqn{T} by \eqn{V} matrix. Reads in a CIFTI, NIFTI,
+or GIFTI file. Transposes CIFTI and xifti object input. Masks NIFTI and
+nifti object input.
 }
 \keyword{internal}
