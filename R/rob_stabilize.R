@@ -11,13 +11,14 @@
 #'
 #' @return The output of \code{robustbase::lmrob}
 #'
+#' @importFrom fMRItools is_integer dct_bases
 #' @keywords internal
 rob_trend <- function(x, nDCT=4, lmrob_method="MM", seed=0) {
   x <- as.vector(x)
   T_ <- length(x)
 
   nDCT <- as.numeric(nDCT)
-  stopifnot(is_integer(nDCT)); stopifnot(nDCT >= 0)
+  stopifnot(fMRItools::is_integer(nDCT, nneg=TRUE))
   if (nDCT == 0) {
     mat <- data.frame(rep(1, T_))
     colnames(mat) <- "x_int"
@@ -53,6 +54,7 @@ rob_trend <- function(x, nDCT=4, lmrob_method="MM", seed=0) {
 #'
 #' @return the timeseries with its center and scale stabilized
 #' 
+#' @importFrom fMRItools is_integer
 #' @export
 #' 
 rob_stabilize <- function(x, center=TRUE, scale=TRUE, lmrob_method="MM", rescale=TRUE) {
@@ -69,7 +71,7 @@ rob_stabilize <- function(x, center=TRUE, scale=TRUE, lmrob_method="MM", rescale
     center <- 0
   } else {
     center <- as.numeric(center)
-    stopifnot(is_integer(center, nneg=TRUE))
+    stopifnot(fMRItools::is_integer(center, nneg=TRUE))
   }
 
   if (isTRUE(scale)) {
@@ -78,7 +80,7 @@ rob_stabilize <- function(x, center=TRUE, scale=TRUE, lmrob_method="MM", rescale
     scale <- 0
   } else {
     scale <- as.numeric(scale)
-    stopifnot(is_integer(scale, nneg=TRUE))
+    stopifnot(fMRItools::is_integer(scale, nneg=TRUE))
   }
 
   if (center > 0) {

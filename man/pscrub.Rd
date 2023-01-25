@@ -47,7 +47,7 @@ high kurtosis and outlier presence. Detrending should not be used with
 non-time-series data because the observations are not temporally related.
 
 Additional nuisance regressors can be specified like so:
-\code{cbind(1, dct_bases(nrow(x), 4), more_nuisance)}.}
+\code{cbind(1, fMRItools::dct_bases(nrow(x), 4), more_nuisance)}.}
 
 \item{center, scale}{Center the columns of the data by their medians, and scale the
 columns of the data by their median absolute deviations (MADs)? Default: \code{TRUE}.
@@ -178,10 +178,10 @@ outline of the algorithm: \code{vignette("projection_scrubbing", package="fMRIsc
 }
 
 \examples{
-if (requireNamespace("fastICA", quietly = TRUE)) {
- n_voxels = 5e3
- n_timepoints = 70
- X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
- psx = pscrub(X)
-}
+library(fastICA)
+n_voxels = 2e3
+n_timepoints = 35
+X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
+
+psx = pscrub(X)
 }

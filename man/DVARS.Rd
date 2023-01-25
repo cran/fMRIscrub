@@ -8,7 +8,7 @@ DVARS(
   X,
   normalize = TRUE,
   cutoff_DPD = 5,
-  cutoff_ZD = qnorm(1 - 0.05/nrow(as.matrix2(X))),
+  cutoff_ZD = qnorm(1 - 0.05/nrow(as.matrix_ifti(X))),
   verbose = FALSE
 )
 }

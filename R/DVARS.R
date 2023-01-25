@@ -22,58 +22,6 @@ sd_hIQR <- function(x, d=1){
   return(as.numeric(out))
 }
 
-#' Mode of data vector
-#' 
-#' Get mode of a data vector. But use the median instead of the mode if all 
-#'  data values are unique.
-#' 
-#' @param x The data vector
-#' 
-#' @return The mode
-#' 
-#' @keywords internal
-#' 
-Mode <- function(x) {
-  q <- unique(x)
-  # Use median instead of the mode if all data values are unique.
-  if (length(q) == length(x)) { return(median(x)) }
-  q[which.max(tabulate(match(x, q)))]
-}
-
-#' Convert data values to percent signal.
-#' 
-#' Convert data values to percent signal.
-#' 
-#' @param X a \eqn{T} by \eqn{N} numeric matrix. The columns will be normalized to
-#'  percent signal.
-#' @param center A function that computes the center of a numeric vector.
-#'  Default: \code{median}. Other common options include \code{mean} and 
-#'  \code{mode}.
-#' @param by Should the center be measured individually for each \code{"column"}
-#'  (default), or should the center be the same across \code{"all"} columns?
-#' 
-#' @return \code{X} with its columns normalized to percent signal. (A value of
-#'  85 will represent a -15% signal change.)
-#' 
-#' @export
-pct_sig <- function(X, center=median, by=c("column", "all")){
-  stopifnot(is.numeric(X))
-  stopifnot(length(dim(X))==2)
-  stopifnot(is.function(center))
-  by <- match.arg(by, c("column", "all"))
-
-  T_ <- nrow(X); N_ <- ncol(X)
-  X <- t(X)
-
-  if (by=="column") {
-    m <- apply(X, 1, center)
-  } else {
-    m <- center(as.numeric(X))
-  }
-
-  t(X / m * 100)
-}
-
 #' DVARS
 #' 
 #' Computes the DSE decomposition and DVARS-related statistics. Based on code
@@ -108,6 +56,7 @@ pct_sig <- function(X, center=median, by=c("column", "all")){
 #' }
 #' @export
 #' @importFrom stats median pchisq qnorm
+#' @importFrom fMRItools as.matrix_ifti
 #' 
 #' @section References:
 #'  \itemize{
@@ -117,12 +66,12 @@ pct_sig <- function(X, center=median, by=c("column", "all")){
 DVARS <- function(
   X, normalize=TRUE, 
   cutoff_DPD=5,
-  cutoff_ZD=qnorm(1 - .05 / nrow(as.matrix2(X))),
+  cutoff_ZD=qnorm(1 - .05 / nrow(as.matrix_ifti(X))),
   verbose=FALSE){
 
   cutoff_DVARS <- NULL
 
-  X <- as.matrix2(X, verbose=verbose)
+  X <- as.matrix_ifti(X, verbose=verbose)
   T_ <- nrow(X); N_ <- ncol(X)
 
   cutoff <- list(DVARS=cutoff_DVARS, DPD=cutoff_DPD, ZD=cutoff_ZD)

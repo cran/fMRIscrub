@@ -21,7 +21,7 @@
 #'  non-time-series data because the observations are not temporally related.
 #' 
 #'  Additional nuisance regressors can be specified like so:
-#'  \code{cbind(1, dct_bases(nrow(x), 4), more_nuisance)}.
+#'  \code{cbind(1, fMRItools::dct_bases(nrow(x), 4), more_nuisance)}.
 #' @param center,scale Center the columns of the data by their medians, and scale the
 #'  columns of the data by their median absolute deviations (MADs)? Default: \code{TRUE}. 
 #'  Centering is necessary for computing the projections, so if \code{center} is
@@ -99,7 +99,7 @@ NULL
 #'  (The vectorized data will be \eqn{T timepoints} by \eqn{V_{in-mask} voxels})
 #' 
 #'  Or, a \code{ciftiTools} \code{"xifti"} object or a file path to a CIFTI
-#'  (The vectorized data will be \eqn{T timepoints} by \eqn{V_{left+right+sub} greyordinates}).
+#'  (The vectorized data will be \eqn{T timepoints} by \eqn{V_{left+right+sub} grayordinates}).
 #' @param ROI_data Indicates the data ROI. Allowed arguments depend on \code{X}:
 #' 
 #'  If \code{X} is a matrix, this must be a length \eqn{V} logical vector, where
@@ -143,7 +143,7 @@ NULL
 #'  be mutually exclusive with each other, and with \code{ROI_data}. 
 #' 
 #'  (If \code{X} is a \code{"xifti"}, entries must be data matrices, since no 
-#'  greyordinate locations in \code{X} are appropriate noise ROIs).
+#'  grayordinate locations in \code{X} are appropriate noise ROIs).
 #' @name data_CompCor_Params
 #' @keywords internal
 NULL

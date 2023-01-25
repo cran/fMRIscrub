@@ -47,6 +47,7 @@
 #' }
 #'
 #' @importFrom utils read.table
+#' @importFrom fMRItools nuisance_regression dct_bases
 #' @export
 #' 
 #' @section References:

@@ -16,6 +16,7 @@
 #'  \code{!is.null(median_cutoff)}, \code{"cut"} and \code{"flag"} are omitted.
 #'  
 #' @importFrom stats median
+#' @importFrom fMRItools hat_matrix
 #' 
 #' @export
 leverage <- function(Comps, are_norm=FALSE, median_cutoff=NULL){

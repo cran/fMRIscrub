@@ -6,8 +6,6 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/mandymejia/fMRIscrub/workflows/R-CMD-check/badge.svg)](https://github.com/mandymejia/fMRIscrub/actions)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/mandymejia/fMRIscrub?branch=master&svg=true)](https://ci.appveyor.com/project/mandymejia/fMRIscrub)
 [![Codecov test
 coverage](https://codecov.io/gh/mandymejia/fMRIscrub/branch/master/graph/badge.svg)](https://app.codecov.io/gh/mandymejia/fMRIscrub?branch=master)
 <!-- badges: end -->
@@ -15,9 +13,8 @@ coverage](https://codecov.io/gh/mandymejia/fMRIscrub/branch/master/graph/badge.s
 `fMRIscrub` is a collection of routines for data-driven scrubbing
 (projection scrubbing and DVARS), motion scrubbing, and other fMRI
 denoising strategies such as anatomical CompCor, detrending, and
-nuisance regression. The data-driven scrubbing methods are also
-applicable to other outlier detection tasks involving high-dimensional
-data.
+nuisance regression. Projection scrubbing is also applicable to other
+outlier detection tasks involving high-dimensional data.
 
 ## Installation
 
