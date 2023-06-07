@@ -4,7 +4,7 @@ projection_scrubbing <- c(
 	bibentry(
 		bibtype      = "Article",
 		title        = "PCA leverage: outlier detection for high-dimensional functional magnetic resonance imaging data",
-		author       = personList(
+		author       = c(
 			as.person("Amanda F Mejia"),
 			as.person("Mary Beth Nebel"),
 			as.person("Ani Eloyan"),
@@ -22,17 +22,19 @@ projection_scrubbing <- c(
 	),
 
 	bibentry(
-		bibtype			 = "Article",
-		title 			 = "Less is more: balancing noise reduction and data retention in fMRI with projection scrubbing", 
-		author 			 = personList(
+		bibtype			= "Article",
+		title 			= "Less is more: balancing noise reduction and data retention in fMRI with data-driven scrubbing",
+		author 			 = c(
 			as.person("Damon D Pham"),
 			as.person("Daniel McDonald"),
 			as.person("Lei Ding"),
 			as.person("Mary Beth Nebel"),
 			as.person("Amanda Mejia")
 		),
-		journal			 = "Arxiv",
-		year 				 = "2022",
-		key					 = "phamProjectionScrubbingMore2022a"
+		journal			= "NeuroImage",
+		pages				= "119972",
+		year				= "2023",
+		publisher		= "Elsevier",
+		key					= "phamScrubbingLess2023"
 	)
 )

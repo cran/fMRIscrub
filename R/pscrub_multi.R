@@ -82,7 +82,7 @@
 #' @importFrom pesel pesel
 #' @importFrom robustbase rowMedians
 #' @importFrom stats mad qnorm var setNames
-#' @importFrom fMRItools is_integer is_constant nuisance_regression as.matrix_ifti dct_bases validate_design_mat
+#' @importFrom fMRItools is_integer is_constant nuisance_regression as.matrix_ifti dct_bases validate_design_mat is_1 is_posNum
 #' 
 #' @keywords internal
 #' 
@@ -98,6 +98,16 @@ pscrub_multi = function(
   # ----------------------------------------------------------------------------
   # Check arguments. -----------------------------------------------------------
   # ----------------------------------------------------------------------------
+
+  # Simple arguments. ----------------------------------------------------------
+  stopifnot(is_1(center, "logical"))
+  stopifnot(is_1(scale, "logical"))
+  stopifnot(is_posNum(kurt_quantile))
+  stopifnot(is_1(get_dirs, "logical"))
+  stopifnot(is_1(full_PCA, "logical"))
+  stopifnot(is_1(get_outliers, "logical"))
+  stopifnot(is_1(cutoff, "numeric") && cutoff==round(cutoff))
+  stopifnot(is_1(verbose, "logical"))
 
   # `X` ------------------------------------------------------------------------
   if (verbose) { cat("Checking for missing, infinite, and constant data.\n") }
@@ -190,16 +200,14 @@ pscrub_multi = function(
     }
   }
 
-  # other arguments ------------------------------------------------------------
-  center <- as.logical(center); stopifnot(isTRUE(center) || isFALSE(center))
-  scale <- as.logical(scale); stopifnot(isTRUE(scale) || isFALSE(scale))
+  # Component detrending arguments. --------------------------------------------
   if (isTRUE(comps_mean_dt)) {
     comps_mean_dt <- 4
   } else if (isFALSE(comps_mean_dt)) { 
     comps_mean_dt <- 0
   } else {
     comps_mean_dt <- as.numeric(comps_mean_dt)
-    stopifnot(fMRItools::is_integer(comps_mean_dt, nneg=TRUE))
+    stopifnot(is_integer(comps_mean_dt, nneg=TRUE))
   }
   if (isTRUE(comps_var_dt)) {
     comps_var_dt <- 4
@@ -207,11 +215,9 @@ pscrub_multi = function(
     comps_var_dt <- 0
   } else {
     comps_var_dt <- as.numeric(comps_var_dt)
-    stopifnot(fMRItools::is_integer(comps_var_dt, nneg=TRUE))
+    stopifnot(is_integer(comps_var_dt, nneg=TRUE))
   }
   comps_dt <- (comps_mean_dt > 0) || (comps_var_dt > 0)
-  kurt_quantile <- as.numeric(kurt_quantile)
-  stopifnot(kurt_quantile >= 0 && kurt_quantile <= 1)
   # if(!identical(fusedPCA_kwargs, NULL)){
   #   names(fusedPCA_kwargs) <- match.arg(
   #     names(fusedPCA_kwargs), c("lambda", "niter_max", "TOL", "verbose"),
@@ -220,11 +226,6 @@ pscrub_multi = function(
   #     stop("Duplicate fusedPCA_kwargs were given.")
   #   }
   # }
-  get_dirs <- as.logical(get_dirs); stopifnot(isTRUE(get_dirs) || isFALSE(get_dirs))
-  full_PCA <- as.logical(full_PCA); stopifnot(isTRUE(full_PCA) || isFALSE(full_PCA))
-  get_outliers <- as.logical(get_outliers); stopifnot(isTRUE(get_outliers) || isFALSE(get_outliers))
-  cutoff <- as.numeric(cutoff); stopifnot(fMRItools::is_integer(cutoff, nneg=TRUE))
-  verbose <- as.logical(verbose); stopifnot(isTRUE(verbose) || isFALSE(verbose))
 
   # ----------------------------------------------------------------------------
   # Nuisance regression followed by centering & scaling. -----------------------

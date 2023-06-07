@@ -105,13 +105,8 @@ pscrub = function(
     #"fusedPCA", 
     "PCA"
   ))
-  if (!PESEL) { projection <- paste0(projection, "2") }
-  if (kurt_quantile > 0) { 
-    projection <- paste0(projection, "_kurt")
-  } else {
-    kurt_quantile <- .99
-  }
-
+  projection <- projection_name(projection, PESEL, kurt_quantile)
+  
   # Run `pscrub_multi`.
   psx <- pscrub_multi(
     X=X, projection=projection, 

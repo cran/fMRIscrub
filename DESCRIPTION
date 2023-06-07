@@ -1,7 +1,7 @@
 Package: fMRIscrub
 Type: Package
 Title: Scrubbing and Other Data Cleaning Routines for fMRI
-Version: 0.12.1
+Version: 0.13.0
 Authors@R: c(
     person(given = "Amanda",
            family = "Mejia",
@@ -20,12 +20,16 @@ Authors@R: c(
     person(given = "Daniel",
            family = "McDonald",
            email = "daniel@stat.ubc.ca",
+           role = c("ctb")),
+    person(given = "Fatma",
+           family = "Parlak",
+           email = "fparlak@iu.edu",
            role = c("ctb"))
     )
 Maintainer: Amanda Mejia <mandy.mejia@gmail.com>
 Description: Data-driven fMRI denoising with projection scrubbing (Pham et al 
-    (2022) <arXiv:2108.00319>). Also includes routines for DVARS (Derivatives 
-    VARianceS) (Afyouni and Nichols (2018) 
+    (2022) <doi:10.1016/j.neuroimage.2023.119972>). Also includes routines for 
+    DVARS (Derivatives VARianceS) (Afyouni and Nichols (2018) 
     <doi:10.1016/j.neuroimage.2017.12.098>), motion scrubbing (Power et al 
     (2012) <doi:10.1016/j.neuroimage.2011.10.018>), aCompCor (anatomical 
     Components Correction) (Muschelli et al (2014)
@@ -35,8 +39,8 @@ Description: Data-driven fMRI denoising with projection scrubbing (Pham et al
 Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
-Imports: MASS, e1071, fMRItools (>= 0.2.2), pesel, robustbase, stats,
-        utils
+Imports: MASS, cellWise, e1071, fMRItools (>= 0.2.2), pesel,
+        robustbase, stats, expm, utils, gamlss
 Suggests: corpcor, cowplot, ciftiTools, gifti, knitr, rmarkdown,
         RNifti, ggplot2, fastICA, oro.nifti, testthat (>= 3.0.0), covr
 RoxygenNote: 7.2.3
@@ -44,10 +48,11 @@ URL: https://github.com/mandymejia/fMRIscrub
 BugReports: https://github.com/mandymejia/fMRIscrub/issues
 LazyData: true
 NeedsCompilation: no
-Packaged: 2023-01-25 15:42:53 UTC; ddpham
+Packaged: 2023-06-07 11:11:59 UTC; ddpham
 Author: Amanda Mejia [aut, cre],
   John Muschelli [aut] (<https://orcid.org/0000-0001-6469-1750>),
   Damon Pham [aut] (<https://orcid.org/0000-0001-7563-4727>),
-  Daniel McDonald [ctb]
+  Daniel McDonald [ctb],
+  Fatma Parlak [ctb]
 Repository: CRAN
-Date/Publication: 2023-01-25 16:00:02 UTC
+Date/Publication: 2023-06-07 14:50:13 UTC
