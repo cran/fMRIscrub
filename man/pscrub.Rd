@@ -19,6 +19,7 @@ pscrub(
   get_outliers = TRUE,
   cutoff = 4,
   seed = 0,
+  ICA_method = c("C", "R"),
   verbose = FALSE
 )
 }
@@ -112,6 +113,9 @@ Default: \code{FALSE} (return only the high-variance components).}
 \code{ica::icaimax}? If \code{NULL}, do not set a seed. If numeric (default:
 \code{0}), will use as the seed.}
 
+\item{ICA_method}{The \code{method} argument to \code{fastICA}: \code{"C"} to
+use C code with BLAS (default), or \code{"R"} to use R code.}
+
 \item{verbose}{Should occasional updates be printed? Default: \code{FALSE}.}
 }
 \value{
@@ -179,9 +183,5 @@ outline of the algorithm: \code{vignette("projection_scrubbing", package="fMRIsc
 
 \examples{
 library(fastICA)
-n_voxels = 2e3
-n_timepoints = 35
-X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
-
-psx = pscrub(X)
+psx = pscrub(Dat1[seq(70),seq(800,950)], ICA_method="R")
 }

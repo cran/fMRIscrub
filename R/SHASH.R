@@ -65,7 +65,7 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #' x[77] <- 13
 #' SHASH_out(x)
 #'
-SHASH_out <- function(x, maxit = 100, out_lim = 4, weight_init = NULL){
+SHASH_out <- function(x, maxit = 20, out_lim = 3, weight_init = NULL){
   nL <- length(x)
   if(is.null(weight_init)){
     weight_new <- rep(TRUE, nL) # TRUE if not an outlier
@@ -141,4 +141,5 @@ emprule_rob <- function(x, thr=4){
   lim_left = x_med - thr * MAD
   lim_right = x_med + thr * MAD
   out <- (x < lim_left) | (x > lim_right)
+
 }

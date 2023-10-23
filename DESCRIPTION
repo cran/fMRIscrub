@@ -1,7 +1,7 @@
 Package: fMRIscrub
 Type: Package
 Title: Scrubbing and Other Data Cleaning Routines for fMRI
-Version: 0.13.0
+Version: 0.14.4
 Authors@R: c(
     person(given = "Amanda",
            family = "Mejia",
@@ -48,11 +48,11 @@ URL: https://github.com/mandymejia/fMRIscrub
 BugReports: https://github.com/mandymejia/fMRIscrub/issues
 LazyData: true
 NeedsCompilation: no
-Packaged: 2023-06-07 11:11:59 UTC; ddpham
+Packaged: 2023-10-22 18:10:52 UTC; ddpham
 Author: Amanda Mejia [aut, cre],
   John Muschelli [aut] (<https://orcid.org/0000-0001-6469-1750>),
   Damon Pham [aut] (<https://orcid.org/0000-0001-7563-4727>),
   Daniel McDonald [ctb],
   Fatma Parlak [ctb]
 Repository: CRAN
-Date/Publication: 2023-06-07 14:50:13 UTC
+Date/Publication: 2023-10-23 07:50:04 UTC

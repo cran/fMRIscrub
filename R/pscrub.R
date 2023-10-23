@@ -81,11 +81,7 @@
 #'
 #' @examples
 #' library(fastICA)
-#' n_voxels = 2e3
-#' n_timepoints = 35
-#' X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
-#'
-#' psx = pscrub(X)
+#' psx = pscrub(Dat1[seq(70),seq(800,950)], ICA_method="R")
 pscrub = function(
   X, projection=c(
     "ICA", 
@@ -97,7 +93,7 @@ pscrub = function(
   PESEL=TRUE, kurt_quantile=.99, 
   #fusedPCA_kwargs=NULL, 
   get_dirs=FALSE, full_PCA=FALSE,
-  get_outliers=TRUE, cutoff=4, seed=0,
+  get_outliers=TRUE, cutoff=4, seed=0, ICA_method=c("C", "R"),
   verbose=FALSE){
   
   projection <- match.arg(projection, c(
@@ -115,7 +111,7 @@ pscrub = function(
     kurt_quantile=kurt_quantile, 
     #fusedPCA_kwargs=fusedPCA_kwargs,
     get_dirs=get_dirs, full_PCA=full_PCA,
-    get_outliers=get_outliers, cutoff=cutoff, seed=seed,
+    get_outliers=get_outliers, cutoff=cutoff, seed=seed, ICA_method=ICA_method,
     verbose=verbose
   )
 

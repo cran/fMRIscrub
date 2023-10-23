@@ -20,6 +20,7 @@ RD_meas <- function(data, ind_incld, dist=TRUE){
   xbar_star <- colMeans(data_incld)
   sc_data_incld <- scale(data_incld,  center = TRUE, scale = FALSE)
   S_star <- (t(sc_data_incld) %*% sc_data_incld) / (h-1)
+  # [TO DO] if singular? example: robdist(Dat1[seq(70),seq(1000)])
   invcov <- solve(S_star)
   invcov_sqrt <- sqrtm(invcov)
 
@@ -91,7 +92,6 @@ RD_univOut <- function(
 #'
 #' @param data The data
 #' @param univOut The univariate outliers
-#' @param cutoff Default: \code{4}
 #'
 #' @keywords internal
 #' @return The data with imputed outliers.
@@ -168,11 +168,7 @@ RD_impData <- function(data, univOut){
 #'
 #' @examples
 #' library(fastICA)
-#' n_voxels = 2e3
-#' n_timepoints = 35
-#' X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
-#'
-#' rdx = robdist(X)
+#' rdx = robdist(Dat1[seq(70),seq(800,950)])
 robdist = function(
   X,
   RD_cutoff = 4,
@@ -190,7 +186,7 @@ robdist = function(
   PESEL=TRUE, kurt_quantile=.99,
   #fusedPCA_kwargs=NULL,
   get_dirs=FALSE, full_PCA=FALSE,
-  get_outliers=TRUE, cutoff=4, seed=0,
+  get_outliers=TRUE, cutoff=4, seed=0, ICA_method=c("C", "R"),
   skip_dimred=FALSE,
   verbose=FALSE){
 
@@ -211,6 +207,7 @@ robdist = function(
       #fusedPCA_kwargs=fusedPCA_kwargs,
       get_dirs=get_dirs, full_PCA=full_PCA,
       get_outliers=get_outliers, cutoff=cutoff, seed=seed,
+      ICA_method=ICA_method,
       verbose=verbose
     )
 
