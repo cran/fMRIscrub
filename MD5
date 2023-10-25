@@ -1,4 +1,4 @@
-67481767a9f858621e562c1a9e687d4b *DESCRIPTION
+7df4f17a4f8b0fb08889f76afc073b8e *DESCRIPTION
 9c329dd4a2b88e4337e24ddb4b09c8f6 *NAMESPACE
 d77f2e8f8ba7f4aaba37f12ef8941092 *NEWS.md
 3cf5315567e3bba488651274d2d45660 *R/DVARS.R
@@ -68,5 +68,5 @@ bbb9f462ecf5ee3224914f066b52094d *man/scrub_plot.Rd
 ba2d5675cc7975e80db4b68d4243c39c *man/summary.scrub_projection.Rd
 0167036d9dff1d01e5c227e71fa79bd2 *tests/testthat.R
 58bb516a70bb37901be3567630f02b17 *tests/testthat/Rplots.pdf
-5fc894178a3fa5857ad2fe1bf96b8d27 *tests/testthat/test-test_all_methods.R
-1e8bf33e07610f3c59c1a151ee9fe15d *tests/testthat/test-test_scrubbing.R
+8757fc5e32fcc840b74784b56f5ae266 *tests/testthat/test-test_all_methods.R
+f543c867f64d7d00fe57c094b1e1c831 *tests/testthat/test-test_scrubbing.R
